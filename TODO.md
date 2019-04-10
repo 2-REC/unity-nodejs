@@ -1,4 +1,5 @@
 TODO:
+!- [ ] Set all Editor fields to "PropertyFields" to avoid persistency issues!
 - [ ] Change logging stuff
   => Use proper way to redirect output
 - [ ] Test on IOS, and see about executable
