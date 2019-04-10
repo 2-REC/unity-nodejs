@@ -9,7 +9,6 @@ public class NodeJs : MonoBehaviour {
     public Text text;
 
 
-	#region [ static members ]
 	public static readonly string NODE_DEFAULT_PATH = ".node";
 //TODO: Linux? Android?
 	#if UNITY_STANDALONE_WIN
@@ -22,9 +21,8 @@ public class NodeJs : MonoBehaviour {
 	#endif
 
 	public static readonly string SCRIPT_DEFAULT_PATH = ".script";
-    #endregion
 
-    #region [ member variables ]
+
     public bool useNodeEmbedded = true;
     public bool useNodeDefault = true;
     public string nodePath = "";
@@ -46,13 +44,11 @@ public class NodeJs : MonoBehaviour {
 
     private System.Diagnostics.Process process_ = null;
 	private List<string> logs_ = new List<string>();
-	#endregion
 
-	#region [ getter / setter ]
+
 	public bool isRunning { get; set; }
-	#endregion
 
-	#region [ member functions ]
+
 	private void Init() {
 
         if (!isInitialized) {
@@ -124,6 +120,13 @@ public class NodeJs : MonoBehaviour {
 
     void InitProcess() {
 
+        if (scriptName == "") {
+//TODO: if no script provided, should redirect the input, & listen to user/app input!
+//            print("No script name provided!");
+//TODO: use other exception type?
+            throw new System.Exception("No script name provided!");
+        }
+
         process_ = new System.Diagnostics.Process();
 
         process_.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
@@ -178,6 +181,5 @@ text.text += log;
 			Debug.LogError("Error! Exit Code: " + process_.ExitCode);
 		}
 	}
-    #endregion
 
 }
