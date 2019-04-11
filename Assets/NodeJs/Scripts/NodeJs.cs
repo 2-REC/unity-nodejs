@@ -46,80 +46,87 @@ public class NodeJs : MonoBehaviour {
 	private List<string> logs_ = new List<string>();
 
 
-	public bool isRunning { get; set; }
+    public bool isRunning = false;
 
 
-	private void Init() {
+    public void Init() {
+        if (isInitialized) {
+            print("Process already initialized");
+        }
 
-        if (!isInitialized) {
-            if (useNodeEmbedded) {
-                if (useNodeDefault) {
-                    nodePath = NODE_DEFAULT_PATH;
-                    nodeFullPath = System.IO.Path.Combine(Application.streamingAssetsPath, nodePath);
-                }
-                else {
-                    nodeFullPath = System.IO.Path.Combine(Application.streamingAssetsPath, nodePath);
-                }
+        if (useNodeEmbedded) {
+            if (useNodeDefault) {
+                nodePath = NODE_DEFAULT_PATH;
+                nodeFullPath = System.IO.Path.Combine(Application.streamingAssetsPath, nodePath);
             }
             else {
-                nodePath = "";
-                nodeFullPath = "";
+                nodeFullPath = System.IO.Path.Combine(Application.streamingAssetsPath, nodePath);
             }
+        }
+        else {
+            nodePath = "";
+            nodeFullPath = "";
+        }
 //print("nodeFullPath: " + nodeFullPath);
 
 
 //TODO: allow possibility to use external script...
-            if (useScriptPathDefault) {
-                scriptPath = SCRIPT_DEFAULT_PATH;
-                scriptFullPath = System.IO.Path.Combine(Application.streamingAssetsPath, scriptPath);
-            }
-            else {
-                scriptFullPath = System.IO.Path.Combine(Application.streamingAssetsPath, scriptPath);
-            }
+        if (useScriptPathDefault) {
+            scriptPath = SCRIPT_DEFAULT_PATH;
+            scriptFullPath = System.IO.Path.Combine(Application.streamingAssetsPath, scriptPath);
+        }
+        else {
+            scriptFullPath = System.IO.Path.Combine(Application.streamingAssetsPath, scriptPath);
+        }
 //print("scriptFullPath: " + scriptFullPath);
 
-            isInitialized = true;
-		}
+        isInitialized = true;
 	}
 
-	void Awake() {
-		isRunning = false;
+//TODO: OK?
+    public void Reset() {
+        Stop();
+        isInitialized = false;
+    }
 
-        Init();
+    public bool Run() {
+		if (isRunning) {
+			Debug.LogError("Already Running: " + scriptName);
+			return true;
+		}
+
+        if (!isInitialized) {
+			Debug.LogError("Process not initilized, call 'Init' first!");
+			return false;
+        }
 
         try {
-            Run();
+            StartProcess();
+            isRunning = true;
         }
         catch (System.Exception e) {
             Debug.LogException(e, this);
+//TODO: do that here?
             if (process_ != null) {
                 process_.Dispose();
                 process_ = null;
             }
-            Application.Quit(-1);
         }
+
+        return isRunning;
 	}
 
-	void OnDestroy() {
-		if ((process_ != null) && !process_.HasExited) {
-			process_.Kill();
-			process_.Dispose();
-		}
-	}
-
-	void Run() {
-		if (isRunning) {
-			Debug.LogError("Already Running: " + scriptName);
+    public void Stop() {
+		if (!isRunning) {
+			Debug.LogError("Already Stopped: " + scriptName);
 			return;
 		}
 
-        InitProcess();
+        StopProcess();
+    }
 
-        isRunning = true;
-	}
 
-    void InitProcess() {
-
+    private void StartProcess() {
         if (scriptName == "") {
 //TODO: if no script provided, should redirect the input, & listen to user/app input!
 //            print("No script name provided!");
@@ -151,20 +158,23 @@ text.text = "Starting: " + process_.StartInfo.FileName + " " + process_.StartInf
         process_.BeginErrorReadLine();
     }
 
-
-    void Stop() {
-		if (!isRunning) {
-			Debug.LogError("Already Stopping: " + scriptName);
-			return;
+    private void StopProcess() {
+        if ((process_ != null) && !process_.HasExited) {
+			process_.Kill();
+//TODO: call WaitForExit?
+            process_.Dispose();
+            process_ = null;
 		}
+    }
 
-//TODO: should check that not null?
-        process_.Kill();
-		process_.Dispose();
+	void OnDestroy() {
+        StopProcess();
 	}
 
-//TODO: rewrite... should be optional...?
-	void OnOutputData(object sender, System.Diagnostics.DataReceivedEventArgs e) {
+
+//TODO: rewrite... should be optional...
+// => or provided by controller
+	private void OnOutputData(object sender, System.Diagnostics.DataReceivedEventArgs e) {
 		if (logs_.Count > logLength) {
             logs_.RemoveAt(0);
         }
@@ -175,7 +185,7 @@ Debug.Log("LOG: " + log);
 text.text += log;
 	}
 
-	void OnExit(object sender, System.EventArgs e) {
+	private void OnExit(object sender, System.EventArgs e) {
 		isRunning = false;
 		if (process_.ExitCode != 0) {
 			Debug.LogError("Error! Exit Code: " + process_.ExitCode);
