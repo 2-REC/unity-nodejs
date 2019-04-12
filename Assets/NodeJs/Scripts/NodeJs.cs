@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class NodeJs : MonoBehaviour {
 
-//TODO: REMOVE!
+//TODO: CHANGE/REMOVE!
     public Text text;
 
 
@@ -151,7 +151,10 @@ public class NodeJs : MonoBehaviour {
         process_.Exited += OnExit;
 
         print("Starting: " + process_.StartInfo.FileName + " " + process_.StartInfo.Arguments);
-text.text = "Starting: " + process_.StartInfo.FileName + " " + process_.StartInfo.Arguments;
+//TODO: CHANGE/REMOVE!
+if (text != null) {
+    text.text = "Starting: " + process_.StartInfo.FileName + " " + process_.StartInfo.Arguments;
+}
         process_.Start();
 
         process_.BeginOutputReadLine();
@@ -182,7 +185,10 @@ text.text = "Starting: " + process_.StartInfo.FileName + " " + process_.StartInf
         log = "";
         logs_.ForEach(line => { log += line + "\n"; });
 Debug.Log("LOG: " + log);
-text.text += log;
+//TODO: CHANGE/REMOVE!
+if (text != null) {
+    text.text += log;
+}
 	}
 
 	private void OnExit(object sender, System.EventArgs e) {
