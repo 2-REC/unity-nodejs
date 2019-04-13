@@ -44,7 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f00393d72fb432046ba9089c11284ae4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: {fileID: 0}
   useNodeEmbedded: 1
   useNodeDefault: 1
   nodePath: 
@@ -52,9 +51,8 @@ MonoBehaviour:
   scriptPath: 
   scriptName: 
   scriptArguments: 
-  logLength: 10
-  log: 
-  isRunning: 0
+  useCommunication: 0
+  communicationController: {fileID: 0}
 --- !u!114 &214442103
 MonoBehaviour:
   m_ObjectHideFlags: 0

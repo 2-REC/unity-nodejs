@@ -1,13 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
-using UnityEngine.UI;
 
 
 public class NodeJs : MonoBehaviour {
-
-//TODO: CHANGE/REMOVE!
-    public Text text;
-
 
 	public static readonly string NODE_DEFAULT_PATH = ".node";
 //TODO: Linux? Android?
@@ -32,21 +26,16 @@ public class NodeJs : MonoBehaviour {
     public string scriptName = "";
     public string scriptArguments = "";
 
-//TODO: ?
-    public int logLength = 10;
-//TODO: ?
-    public string log = "";
-
+    public bool useCommunication;
+    public CommunicationController communicationController;
 
     private string nodeFullPath;
     private string scriptFullPath;
     private bool isInitialized = false;
 
+//TODO: should be public?
+    private bool isRunning = false;
     private System.Diagnostics.Process process_ = null;
-	private List<string> logs_ = new List<string>();
-
-
-    public bool isRunning = false;
 
 
     public void Init() {
@@ -79,6 +68,13 @@ public class NodeJs : MonoBehaviour {
             scriptFullPath = System.IO.Path.Combine(Application.streamingAssetsPath, scriptPath);
         }
 //print("scriptFullPath: " + scriptFullPath);
+
+
+        if (useCommunication) {
+            if (communicationController == null) {
+                throw new System.Exception("No Communication Manager provided!");
+            }
+        }
 
         isInitialized = true;
 	}
@@ -145,16 +141,15 @@ public class NodeJs : MonoBehaviour {
         process_.StartInfo.UseShellExecute = false;
         process_.StartInfo.WorkingDirectory = scriptFullPath;
 
-        process_.OutputDataReceived += OnOutputData;
-        process_.ErrorDataReceived += OnOutputData;
+        if (useCommunication) {
+            process_.OutputDataReceived += OnOutputData;
+            process_.ErrorDataReceived += OnErrorData;
+        }
         process_.EnableRaisingEvents = true;
         process_.Exited += OnExit;
 
-        print("Starting: " + process_.StartInfo.FileName + " " + process_.StartInfo.Arguments);
-//TODO: CHANGE/REMOVE!
-if (text != null) {
-    text.text = "Starting: " + process_.StartInfo.FileName + " " + process_.StartInfo.Arguments;
-}
+//TODO: remove - debug purpose
+print("Starting: " + process_.StartInfo.FileName + " " + process_.StartInfo.Arguments);
         process_.Start();
 
         process_.BeginOutputReadLine();
@@ -175,20 +170,13 @@ if (text != null) {
 	}
 
 
-//TODO: rewrite... should be optional...
-// => or provided by controller
+//TODO: do the same with input
 	private void OnOutputData(object sender, System.Diagnostics.DataReceivedEventArgs e) {
-		if (logs_.Count > logLength) {
-            logs_.RemoveAt(0);
-        }
-        logs_.Add(e.Data);
-        log = "";
-        logs_.ForEach(line => { log += line + "\n"; });
-Debug.Log("LOG: " + log);
-//TODO: CHANGE/REMOVE!
-if (text != null) {
-    text.text += log;
-}
+        communicationController.OutputData(e.Data);
+	}
+
+    private void OnErrorData(object sender, System.Diagnostics.DataReceivedEventArgs e) {
+        communicationController.ErrorData(e.Data);
 	}
 
 	private void OnExit(object sender, System.EventArgs e) {
