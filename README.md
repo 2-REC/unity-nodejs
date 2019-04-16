@@ -48,16 +48,16 @@ It also provides a CommunicationController implementation to allow displaying ou
 
 ## Node.js
 
-- Use Embedded Node.js<br>
+- <b>Use Embedded Node.js</b><br>
 If the setting is checked, the application will use the Node.js executable provided with the project, that will be embedded in the generated built.<br>
 If the setting is not checked, the application will look for the Node.js executable installed in the system (which will have to be present on the end user's machine and defined in the PATH environment variable).<br>
 
-- Use Default Path<br>
+- <b>Use Default Path</b><br>
 This setting is only enabled if "Use Embedded Node.js" is checked.<br>
 If checked, the application will look for the Node.js executable in the default directory ".node" (located in "StreamingAssets"). The Node.js executable provided in the directory will be embedded in the generated built (as well as the entire directory).<br>
 If the setting is not checked, a different path can be specified.<br>
 
-- Node.js relative path<br>
+- <b>Node.js relative path</b><br>
 This setting is only enabled if "Use Default Path" is checked.<br>
 It allows to specify a different path for the Node.js executable than the default path. The provided path must be a subdirectory of the "StreamingAssets" directory.<br>
 The Node.js executable provided in the directory will be embedded in the generated built (as well as the entire directory).<br>
@@ -65,29 +65,29 @@ The Node.js executable provided in the directory will be embedded in the generat
 
 ## JS Script
 
-- Use Default Script Path<br>
+- <b>Use Default Script Path</b><br>
 If the setting is checked, the application will look for the JavaScript script to execute in the default directory ".script" (located in "StreamingAssets"). The specified directory will be embedded in the generated built.<br>
 If the setting is not checked, a different path can be specified.<br>
 
-- Relative Path<br>
+- <b>Relative Path</b><br>
 This setting is only enabled if "Use Default Script Path" is checked.<br>
 It allows to specify a different path for the JavaScript script than the default path. The provided path must be a subdirectory of the "StreamingAssets" directory.<br>
 The specified directory will be embedded in the generated built.<br>
 
-- Name<br>
+- <b>Name</b><br>
 The name of the JavaScript script to execute.<br>
 It must be located in the specified directory (either the default directory, or the one specified as "Relative Path").<br>
 
-- Arguments<br>
+- <b>Arguments</b><br>
 The arguments to provide to the JavaScript script.<br>
 
 
 ## Communication
 
-- Use Communication<br>
+- <b>Use Communication</b><br>
 This setting allows to provide an object in order to exchange messages with the application.<br>
 
-- Communication Controller<br>
+- <b>Communication Controller<br>
 This setting is only enabled if "Use Communication" is checked.<br>
 It allows to provide an implementation of the CommunicationController class in order to exchange messages with the application.<br>
 (Currently only output messages are handled: the output and error streams from the Node.js application)<br>
