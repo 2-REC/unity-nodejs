@@ -87,7 +87,7 @@ The arguments to provide to the JavaScript script.<br>
 - <b>Use Communication</b><br>
 This setting allows to provide an object in order to exchange messages with the application.<br>
 
-- <b>Communication Controller<br>
+- <b>Communication Controller</b><br>
 This setting is only enabled if "Use Communication" is checked.<br>
 It allows to provide an implementation of the CommunicationController class in order to exchange messages with the application.<br>
 (Currently only output messages are handled: the output and error streams from the Node.js application)<br>
